@@ -137,17 +137,5 @@ namespace a2_multithread
             }
         }
 
-
-        //Wait for threads to finish last transaction
-        private void WaitForThreads()
-        {
-            foreach(Thread thread in threads)
-            {
-                while(thread.IsAlive)
-                {
-                    Thread.Sleep(100);
-                }
-            }
-        }
     }
 }
