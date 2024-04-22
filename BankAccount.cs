@@ -30,8 +30,10 @@ namespace a2_multithread
 
         public void Transaction(double amount, int clientId)
         {
-            lock (lockObject)
-            {
+            //Unlock this lock for no errors
+
+            //lock (lockObject)
+            //{
                 security.MakePreTransactionStamp(balance, clientId);
                 balance = balance + amount;
                 numberOfTransactions++;
@@ -52,7 +54,7 @@ namespace a2_multithread
                     bankManager.UpdateEventLogs("Withdrawal denied, insufficient funds");
                     return;
                 }
-            }
+            //}
         }
     }
 }

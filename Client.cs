@@ -17,6 +17,8 @@ namespace a2_multithread
         private BankManager bankManager;
         private Random random;
 
+        private Object lockObject = new();
+
         public bool Operating { get { return operating; } set { operating = value; } }
         public double TotalAmountTransactioned { get { return totalAmountTransactioned; } set { totalAmountTransactioned = value; } }
 
@@ -40,23 +42,26 @@ namespace a2_multithread
                 double amount = random.NextDouble() * 1000; // Random amount up to 1000
                 amount -= amount % 100;
 
-                if (deposit)
-                {
-                    bankAccount.Transaction(amount, id); // Deposit the amount
-                    totalAmountTransactioned += amount; // Update totalAmountTransactioned
-                }
-                else
-                {
-                    if(amount > bankAccount.Balance)
+                
+                    if (deposit)
                     {
-                        // Saves the world......
+                        bankAccount.Transaction(amount, id); // Deposit the amount
+                        totalAmountTransactioned += amount; // Update totalAmountTransactioned
                     }
-                    else 
+                    else
                     {
-                        bankAccount.Transaction(-amount, id); // Deposit the amount
-                        totalAmountTransactioned -= amount; // Update totalAmountTransactioned
+                        if (amount > bankAccount.Balance)
+                        {
+                            // Saves the world......
+                        }
+                        else
+                        {
+                            bankAccount.Transaction(-amount, id); // Deposit the amount
+                            totalAmountTransactioned -= amount; // Update totalAmountTransactioned
+                        }
                     }
-                }
+                
+                
 
                 // Simulate some delay before next transaction
                 Thread.Sleep(random.Next(100, 1000)); // Sleep for a random time between 100ms and 1000ms

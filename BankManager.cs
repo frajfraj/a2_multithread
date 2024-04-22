@@ -8,11 +8,15 @@ namespace a2_multithread
         private ListBox output;
 
         private BankAccount bankAccount;
+        private Security security;
+
         private List<Client> clients = new();
 
         private List<Thread> threads = new();
 
         private double totalAmountTransactioned;
+
+        
 
         public BankManager(ListBox events, ListBox output)
         {
@@ -20,6 +24,7 @@ namespace a2_multithread
             this.output = output;
 
             bankAccount = new BankAccount(this);
+            security = new Security();
 
             AddClients();
         }
@@ -64,11 +69,14 @@ namespace a2_multithread
                 {
                     client.Operating = false;
                 }
+
+                WaitForThreads();
             }
             finally
             {
                 threads.Clear();
                 GatherResults();
+                
             }
         }
 
@@ -88,6 +96,8 @@ namespace a2_multithread
             string[] output = { numberOfTransactions, numberOfErrors, transactionsSum };
 
             UpdateOutput(output);
+
+            
         }
 
         public void UpdateOutput(string[] _output)
@@ -112,6 +122,19 @@ namespace a2_multithread
             else
             {
                 events.Items.Add(eventMessage);
+            }
+        }
+
+
+        //Wait for threads to finish last transaction
+        private void WaitForThreads()
+        {
+            foreach(Thread thread in threads)
+            {
+                while(thread.IsAlive)
+                {
+                    Thread.Sleep(100);
+                }
             }
         }
     }

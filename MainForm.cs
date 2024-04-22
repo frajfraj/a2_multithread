@@ -4,15 +4,21 @@ public partial class MainForm : Form
 {
     private BankManager bankManager;
 
+    
+   
+
     public MainForm()
     {
         InitializeComponent();
         bankManager = new BankManager(lstOutput, lstItems);
+        btnStop.Enabled = false;
     }
 
     private void btnOK_Click(object sender, EventArgs e)
     {
         bankManager.StartClients();
+        btnOK.Enabled = false;
+        btnStop.Enabled = true;
     }
 
     public void UpdateEventLog(string item, int i)
@@ -33,6 +39,8 @@ public partial class MainForm : Form
     private void btnStop_Click(object sender, EventArgs e)
     {
         bankManager.StopClients();
+        btnOK.Enabled = true;
+        btnStop.Enabled = false;
     }
 
     private void UpdateProductListBox(string item, int i)

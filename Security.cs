@@ -8,7 +8,10 @@ namespace a2_multithread
 {
     internal class Security
     {
+
         private int numberOfErrors;
+
+       
 
         public int NumberOfErrors { get { return numberOfErrors; } set { numberOfErrors = value; } }
 
@@ -18,36 +21,41 @@ namespace a2_multithread
 
         public void MakePreTransactionStamp(double balance, int clientId)
         {
-            // Create a new stamp representing the pre-transaction state
-            Stamp preTransactionStamp = new Stamp(balance, clientId);
-            transactionHistory.Add(preTransactionStamp);
+            
+                // Create a new stamp representing the post-transaction state
+                Stamp postTransactionStamp = new Stamp(balance, clientId);
+                transactionHistory.Add(postTransactionStamp);
+            
         }
 
         public void MakePostTransactionStamp(double balance, int clientId)
         {
-            // Create a new stamp representing the post-transaction state
-            Stamp postTransactionStamp = new Stamp(balance, clientId);
-            transactionHistory.Add(postTransactionStamp);
+            
+                // Create a new stamp representing the post-transaction state
+                Stamp postTransactionStamp = new Stamp(balance, clientId);
+                transactionHistory.Add(postTransactionStamp);
+            
+            
         }
 
         public void VerifyLastTransaction(double amount)
         {
-            lock(this)
+  
+            if (transactionHistory.Count >= 2)
             {
-                if (transactionHistory.Count >= 2)
+                Stamp preTransaction = transactionHistory[transactionHistory.Count - 2];
+                Stamp postTransaction = transactionHistory[transactionHistory.Count - 1];
+
+                // Example verification logic: Check if balance increased after transaction
+                if (postTransaction.Balance != preTransaction.Balance + amount)
                 {
-                    Stamp preTransaction = transactionHistory[transactionHistory.Count - 2];
-                    Stamp postTransaction = transactionHistory[transactionHistory.Count - 1];
-
-                    // Example verification logic: Check if balance increased after transaction
-                    if (postTransaction.Balance != preTransaction.Balance + amount )
-                    {
-                        numberOfErrors++; // Increment error count
-                    }
+                    numberOfErrors++; // Increment error count
                 }
-
             }
-            // Verify the last transaction (if necessary)
+            
         }
+       
+
+
     }
 }
