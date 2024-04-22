@@ -39,7 +39,7 @@ namespace a2_multithread
                 Stamp postTransaction = transactionHistory[transactionHistory.Count - 1];
 
                 // Example verification logic: Check if balance increased after transaction
-                if (postTransaction.Balance != preTransaction.Balance + amount)
+                if (postTransaction.Balance != preTransaction.Balance + amount && preTransaction != null && postTransaction != null)
                 {
                     numberOfErrors++; // Increment error count
                 }
