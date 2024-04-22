@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace a2_multithread
 {
@@ -70,13 +71,24 @@ namespace a2_multithread
                     client.Operating = false;
                 }
 
-                WaitForThreads();
+                foreach(Thread thread in threads)
+                {
+                    if (!thread.Join(TimeSpan.FromSeconds(5)))
+                    {
+                        Console.WriteLine("Thread join timed out. Aborting the thread.");
+                        thread.Abort();
+                    }
+                }
+                
+
+                //WaitForThreads();
             }
             finally
             {
+                
                 threads.Clear();
                 GatherResults();
-                
+
             }
         }
 
