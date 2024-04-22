@@ -71,11 +71,14 @@ namespace a2_multithread
                     client.Operating = false;
                 }
 
-                WaitForThreads();
+                //WaitForThreads();
             }
             finally
             {
-                
+                foreach(Thread thread in threads)
+                {
+                    thread.Join(2000);
+                }
                 threads.Clear();
                 GatherResults();
 
@@ -127,39 +130,41 @@ namespace a2_multithread
             }
         }
 
-        private void WaitForThreads()
-        {
-            // Wait for all threads to finish their transactions
-            bool allThreadsFinished = false;
-            while (!allThreadsFinished)
-            {
-                allThreadsFinished = true;
-                foreach (Thread thread in threads)
-                {
-                    if (thread.IsAlive)
-                    {
-                        allThreadsFinished = false;
-                        break; // Exit the loop early if any thread is still alive
-                    }
-                }
+        //private void WaitForThreads()
+        //{
+        //    Wait for all threads to finish their transactions
 
-                // If all threads have finished, exit the loop
-                if (allThreadsFinished)
-                    break;
+        //   bool allThreadsFinished = false;
+        //    while (!allThreadsFinished)
+        //    {
+        //        allThreadsFinished = true;
+        //        foreach (Thread thread in threads)
+        //        {
+        //            if (thread.IsAlive)
+        //            {
+        //                allThreadsFinished = false;
+        //                break; // Exit the loop early if any thread is still alive
+        //            }
+        //        }
 
-                // Wait for a short period before checking again
-                Thread.Sleep(10);
-            }
+        //        If all threads have finished, exit the loop
+        //        if (allThreadsFinished)
+        //            break;
 
-            // Once all threads have completed, terminate them
-            foreach (Thread thread in threads)
-            {
-                if (thread.IsAlive)
-                {
-                    thread.Abort(); // Terminate the thread
-                }
-            }
-        }
+        //        Wait for a short period before checking again
+
+        //       Thread.Sleep(10);
+        //    }
+
+        //    Once all threads have completed, terminate them
+        //    foreach (Thread thread in threads)
+        //    {
+        //        if (thread.IsAlive)
+        //        {
+        //            thread.Abort(); // Terminate the thread
+        //        }
+        //    }
+        //}
 
     }
 }
