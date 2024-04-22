@@ -13,6 +13,10 @@ namespace a2_multithread
         public Security security;
         private BankManager bankManager; // Add reference to BankManager
 
+        private Object lockObject = new();
+
+        public Object LockObject { get { return lockObject; } set { lockObject = value; } }
+
         public double Balance { get { return balance; } set { balance = value; } }
         public int NumberOfTransactions { get { return numberOfTransactions; } set { numberOfTransactions = value; } }
 
@@ -26,21 +30,29 @@ namespace a2_multithread
 
         public void Transaction(double amount, int clientId)
         {
-            security.MakePreTransactionStamp(balance, clientId);
-            balance = balance + amount;
-            numberOfTransactions++;
-            security.MakePostTransactionStamp(balance, clientId);
-            security.VerifyLastTransaction(amount);
+            lock (lockObject)
+            {
+                security.MakePreTransactionStamp(balance, clientId);
+                balance = balance + amount;
+                numberOfTransactions++;
+                security.MakePostTransactionStamp(balance, clientId);
+                security.VerifyLastTransaction(amount);
 
-            if(amount > 0)
-            {
-                bankManager.UpdateEventLogs("Deposited: " + amount + "\n Balance: " + balance);
+                if (amount > 0)
+                {
+                    bankManager.UpdateEventLogs("Deposited: " + amount + "\n Balance: " + balance);
+                }
+                else
+                {
+                    bankManager.UpdateEventLogs("Withdrawn: " + amount + "\n Balance: " + balance);
+                }
+
+                if (amount > balance)
+                {
+                    bankManager.UpdateEventLogs("Withdrawal denied, insufficient funds");
+                    return;
+                }
             }
-            else
-            {
-                bankManager.UpdateEventLogs("Withdrawn: " + amount + "\n Balance: " + balance);
-            }
-            
         }
     }
 }

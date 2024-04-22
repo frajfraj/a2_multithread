@@ -32,18 +32,22 @@ namespace a2_multithread
 
         public void VerifyLastTransaction(double amount)
         {
-            // Verify the last transaction (if necessary)
-            if (transactionHistory.Count >= 2)
+            lock(this)
             {
-                Stamp preTransaction = transactionHistory[transactionHistory.Count - 2];
-                Stamp postTransaction = transactionHistory[transactionHistory.Count - 1];
-
-                // Example verification logic: Check if balance increased after transaction
-                if (postTransaction.Balance != preTransaction.Balance + amount && preTransaction != null && postTransaction != null)
+                if (transactionHistory.Count >= 2)
                 {
-                    numberOfErrors++; // Increment error count
+                    Stamp preTransaction = transactionHistory[transactionHistory.Count - 2];
+                    Stamp postTransaction = transactionHistory[transactionHistory.Count - 1];
+
+                    // Example verification logic: Check if balance increased after transaction
+                    if (postTransaction.Balance != preTransaction.Balance + amount )
+                    {
+                        numberOfErrors++; // Increment error count
+                    }
                 }
+
             }
+            // Verify the last transaction (if necessary)
         }
     }
 }

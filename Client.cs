@@ -47,19 +47,19 @@ namespace a2_multithread
                 }
                 else
                 {
-                    if (amount > bankAccount.Balance)
+                    if(amount > bankAccount.Balance)
                     {
-                        bankManager.UpdateEventLogs("Withdrawal denied, insufficient funds");
-                        return;
+                        // Saves the world......
                     }
-                        
-
-                    bankAccount.Transaction(-amount, id); // Deposit the amount
-                    totalAmountTransactioned -= amount; // Update totalAmountTransactioned
+                    else 
+                    {
+                        bankAccount.Transaction(-amount, id); // Deposit the amount
+                        totalAmountTransactioned -= amount; // Update totalAmountTransactioned
+                    }
                 }
 
                 // Simulate some delay before next transaction
-                Thread.Sleep(random.Next(100, 500)); // Sleep for a random time between 100ms and 1000ms
+                Thread.Sleep(random.Next(100, 1000)); // Sleep for a random time between 100ms and 1000ms
             }
         }
     }
