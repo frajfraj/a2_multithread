@@ -71,17 +71,7 @@ namespace a2_multithread
                     client.Operating = false;
                 }
 
-                foreach(Thread thread in threads)
-                {
-                    if (!thread.Join(TimeSpan.FromSeconds(5)))
-                    {
-                        Console.WriteLine("Thread join timed out. Aborting the thread.");
-                        thread.Abort();
-                    }
-                }
-                
-
-                //WaitForThreads();
+                WaitForThreads();
             }
             finally
             {
@@ -134,6 +124,40 @@ namespace a2_multithread
             else
             {
                 events.Items.Add(eventMessage);
+            }
+        }
+
+        private void WaitForThreads()
+        {
+            // Wait for all threads to finish their transactions
+            bool allThreadsFinished = false;
+            while (!allThreadsFinished)
+            {
+                allThreadsFinished = true;
+                foreach (Thread thread in threads)
+                {
+                    if (thread.IsAlive)
+                    {
+                        allThreadsFinished = false;
+                        break; // Exit the loop early if any thread is still alive
+                    }
+                }
+
+                // If all threads have finished, exit the loop
+                if (allThreadsFinished)
+                    break;
+
+                // Wait for a short period before checking again
+                Thread.Sleep(10);
+            }
+
+            // Once all threads have completed, terminate them
+            foreach (Thread thread in threads)
+            {
+                if (thread.IsAlive)
+                {
+                    thread.Abort(); // Terminate the thread
+                }
             }
         }
 
